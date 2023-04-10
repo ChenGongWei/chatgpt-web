@@ -1,6 +1,18 @@
 import type { AxiosProgressEvent, GenericAbortSignal } from 'axios'
 import { post } from '@/utils/request'
-import { useSettingStore } from '@/store'
+import { uniService } from '@/utils/request/axios'
+import { useAuthStore, useSettingStore } from '@/store'
+
+export function fetchJWTToken(params: { prompt: string }) {
+  const authStore = useAuthStore()
+  return uniService({
+    url: '/checkAsk',
+    params: {
+      question: params.prompt,
+      token: authStore.token,
+    },
+  })
+}
 
 export function fetchChatAPI<T = any>(
   prompt: string,
@@ -20,7 +32,7 @@ export function fetchChatConfig<T = any>() {
   })
 }
 
-export function fetchChatAPIProcess<T = any>(
+export async function fetchChatAPIProcess<T = any>(
   params: {
     prompt: string
     options?: { conversationId?: string; parentMessageId?: string }
@@ -29,23 +41,57 @@ export function fetchChatAPIProcess<T = any>(
 ) {
   const settingStore = useSettingStore()
 
+  let jwtToken = ''
+  try {
+    const res = await fetchJWTToken({ prompt: params.prompt })
+    jwtToken = res?.data?.data?.token || ''
+  }
+  catch (error) {
+    jwtToken = ''
+  }
+
   return post<T>({
     url: '/chat-process',
     data: { prompt: params.prompt, options: params.options, systemMessage: settingStore.systemMessage },
     signal: params.signal,
+    headers: {
+      Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
+    },
     onDownloadProgress: params.onDownloadProgress,
   })
 }
 
 export function fetchSession<T>() {
-  return post<T>({
-    url: '/session',
-  })
+  return {
+    data: {
+      auth: true,
+      model: 'ChatGPTAPI',
+    } as T,
+  }
+  // return post<T>({
+  //   url: '/session',
+  // })
 }
 
-export function fetchVerify<T>(token: string) {
-  return post<T>({
-    url: '/verify',
-    data: { token },
-  })
+export async function fetchVerify(token: string) {
+  try {
+    const res = await uniService({
+      url: '/verify',
+      params: {
+        token,
+      },
+    })
+    if (res.data?.code === 200)
+      Promise.resolve(res)
+    else
+      Promise.reject(res)
+  }
+  catch (error) {
+    Promise.reject(error)
+  }
+
+  // return post<T>({
+  //   url: '/verify',
+  //   data: { token },
+  // })
 }

@@ -5,10 +5,14 @@ const service = axios.create({
   baseURL: import.meta.env.VITE_GLOB_API_URL,
 })
 
+export const uniService = axios.create({
+  baseURL: 'https://fc-mp-e1f99a1a-8af0-497c-a5ea-5eb4e950d30c.next.bspapp.com/chat',
+})
+
 service.interceptors.request.use(
   (config) => {
     const token = useAuthStore().token
-    if (token)
+    if (token && !config.headers?.Authorization)
       config.headers.Authorization = `Bearer ${token}`
     return config
   },
