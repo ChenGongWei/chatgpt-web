@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import { computed, ref } from 'vue'
 import { NButton, NInput, NModal, useMessage } from 'naive-ui'
-import { fetchVerify } from '@/api'
+import { login } from '@/api'
 import { useAuthStore } from '@/store'
 import Icon403 from '@/icons/403.vue'
 
@@ -16,27 +16,33 @@ const authStore = useAuthStore()
 const ms = useMessage()
 
 const loading = ref(false)
-const token = ref('')
+const phone = ref('')
+const password = ref('')
 
-const disabled = computed(() => !token.value.trim() || loading.value)
+const disabled = computed(() => !phone.value.trim() || !password.value.trim() || loading.value)
 
 async function handleVerify() {
-  const secretKey = token.value.trim()
-
-  if (!secretKey)
+  if (!phone.value.trim() || !password.value.trim())
     return
 
   try {
     loading.value = true
-    await fetchVerify(secretKey)
-    authStore.setToken(secretKey)
-    ms.success('success')
-    window.location.reload()
+    // await fetchVerify(secretKey)
+    const res = await login({ phone: phone.value, password: password.value })
+    if (res?.data?.code !== 200 || !res.data.data.openid) {
+      ms.error(res?.data?.msg || '登录失败')
+    }
+    else {
+      authStore.setToken(res.data.data.openid)
+      ms.success('success')
+      window.location.reload()
+    }
   }
   catch (error: any) {
     ms.error(error.message ?? 'error')
     authStore.removeToken()
-    token.value = ''
+    phone.value = ''
+    password.value = ''
   }
   finally {
     loading.value = false
@@ -57,14 +63,15 @@ function handlePress(event: KeyboardEvent) {
       <div class="space-y-4">
         <header class="space-y-2">
           <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-neutral-200">
-            403
+            {{ $t('common.unauthorizedTitle') }}
           </h2>
           <p class="text-base text-center text-slate-500 dark:text-slate-500">
             {{ $t('common.unauthorizedTips') }}
           </p>
           <Icon403 class="w-[200px] m-auto" />
         </header>
-        <NInput v-model:value="token" type="password" placeholder="" @keypress="handlePress" />
+        <NInput v-model:value="phone" type="text" placeholder="手机号" />
+        <NInput v-model:value="password" type="password" placeholder="密码" @keypress="handlePress" />
         <NButton
           block
           type="primary"
@@ -72,7 +79,7 @@ function handlePress(event: KeyboardEvent) {
           :loading="loading"
           @click="handleVerify"
         >
-          {{ $t('common.verify') }}
+          {{ $t('common.login') }}
         </NButton>
       </div>
     </div>

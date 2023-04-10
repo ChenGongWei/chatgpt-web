@@ -25,7 +25,10 @@ export default {
     success: '操作成功',
     failed: '操作失敗',
     verify: '驗證',
-    unauthorizedTips: '未經授權，請先進行驗證。',
+    unauthorizedTitle: '提示',
+    unauthorizedTips: '未經授權，請先進行登入。',
+    login: '登入',
+    logout: '登出',
   },
   chat: {
     newChatButton: '新建對話',

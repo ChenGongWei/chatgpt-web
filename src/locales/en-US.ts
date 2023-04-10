@@ -25,7 +25,10 @@ export default {
     success: 'Success',
     failed: 'Failed',
     verify: 'Verify',
-    unauthorizedTips: 'Unauthorized, please verify first.',
+    unauthorizedTitle: 'Tip',
+    unauthorizedTips: 'Unauthorized, please login first.',
+    login: 'Login',
+    logout: 'Logout',
   },
   chat: {
     newChatButton: 'New Chat',

@@ -25,7 +25,10 @@ export default {
     success: '操作成功',
     failed: '操作失败',
     verify: '验证',
-    unauthorizedTips: '未经授权，请先进行验证。',
+    unauthorizedTitle: '提示',
+    unauthorizedTips: '未经授权，请先进行登录。',
+    login: '登录',
+    logout: '登出',
   },
   chat: {
     newChatButton: '新建聊天',

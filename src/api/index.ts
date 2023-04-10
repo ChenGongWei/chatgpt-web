@@ -110,3 +110,21 @@ export async function fetchVerify(token: string) {
   //   data: { token },
   // })
 }
+
+export async function login(params: { phone: string; password: string }) {
+  try {
+    const res = await uniService({
+      url: '/login',
+      params,
+    })
+    return res
+  }
+  catch (error) {
+    Promise.reject(error)
+  }
+
+  // return post<T>({
+  //   url: '/verify',
+  //   data: { token },
+  // })
+}
