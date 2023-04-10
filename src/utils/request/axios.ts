@@ -6,7 +6,7 @@ const service = axios.create({
 })
 
 export const uniService = axios.create({
-  baseURL: 'https://fc-mp-e1f99a1a-8af0-497c-a5ea-5eb4e950d30c.next.bspapp.com/chat',
+  baseURL: 'https://fc-mp-31ff25ad-0fd0-4a64-b6f8-936f84c8dc1f.next.bspapp.com/chat',
 })
 
 service.interceptors.request.use(
