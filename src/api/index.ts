@@ -3,17 +3,6 @@ import { post } from '@/utils/request'
 import { uniService } from '@/utils/request/axios'
 import { useAuthStore, useSettingStore } from '@/store'
 
-export function fetchJWTToken(params: { prompt: string }) {
-  const authStore = useAuthStore()
-  return uniService({
-    url: '/checkAsk',
-    params: {
-      question: params.prompt,
-      token: authStore.token,
-    },
-  })
-}
-
 export function fetchChatAPI<T = any>(
   prompt: string,
   options?: { conversationId?: string; parentMessageId?: string },
@@ -53,25 +42,14 @@ export async function fetchChatAPIProcess<T = any>(
       systemMessage: settingStore.systemMessage,
       temperature: settingStore.temperature,
       top_p: settingStore.top_p,
+      token: authStore.token,
     }
-  }
-
-  let jwtToken = ''
-  try {
-    const res = await fetchJWTToken({ prompt: params.prompt })
-    jwtToken = res?.data?.data?.token || ''
-  }
-  catch (error) {
-    jwtToken = ''
   }
 
   return post<T>({
     url: '/chat-process',
     data,
     signal: params.signal,
-    headers: {
-      Authorization: jwtToken ? `Bearer ${jwtToken}` : '',
-    },
     onDownloadProgress: params.onDownloadProgress,
   })
 }

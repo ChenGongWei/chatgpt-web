@@ -29,11 +29,11 @@ async function handleVerify() {
     loading.value = true
     // await fetchVerify(secretKey)
     const res = await login({ phone: phone.value, password: password.value })
-    if (res?.data?.code !== 200 || !res.data.data.openid) {
+    if (res?.data?.code !== 200 || !res.data.data.token) {
       ms.error(res?.data?.msg || '登录失败')
     }
     else {
-      authStore.setToken(res.data.data.openid)
+      authStore.setToken(res.data.data.token)
       ms.success('success')
       window.location.reload()
     }
