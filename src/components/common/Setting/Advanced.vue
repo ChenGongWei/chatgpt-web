@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { NButton, NInput, NSlider, useMessage } from 'naive-ui'
+import { NButton, NSlider, useMessage } from 'naive-ui'
 import { useSettingStore } from '@/store'
 import type { SettingsState } from '@/store/modules/settings/helper'
 import { t } from '@/locales'
@@ -9,7 +9,7 @@ const settingStore = useSettingStore()
 
 const ms = useMessage()
 
-const systemMessage = ref(settingStore.systemMessage ?? '')
+// const systemMessage = ref(settingStore.systemMessage ?? '')
 
 const temperature = ref(settingStore.temperature ?? 0.5)
 
@@ -30,7 +30,7 @@ function handleReset() {
 <template>
   <div class="p-4 space-y-5 min-h-[200px]">
     <div class="space-y-6">
-      <div class="flex items-center space-x-4">
+      <!-- <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[120px]">{{ $t('setting.role') }}</span>
         <div class="flex-1">
           <NInput v-model:value="systemMessage" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }" />
@@ -38,7 +38,7 @@ function handleReset() {
         <NButton size="tiny" text type="primary" @click="updateSettings({ systemMessage })">
           {{ $t('common.save') }}
         </NButton>
-      </div>
+      </div> -->
       <div class="flex items-center space-x-4">
         <span class="flex-shrink-0 w-[120px]">{{ $t('setting.temperature') }} </span>
         <div class="flex-1">
