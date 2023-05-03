@@ -10,7 +10,7 @@ import { auth } from './middleware/auth'
 interface WebSocketParams {
   prompt: string;
   type?: ApiType;
-  filters?: Record<string, string>,
+  filters?: Record<string, string[]>,
   options?: ChatContext;
   systemMessage?: string;
 }
@@ -83,7 +83,7 @@ wss.on("connection", function (ws, req) {
         message = TypeMap[type]
         const keys = Object.keys(filters)
         keys.forEach(key => {
-          message = message.replace(`{${key}}`, filters[key])
+          message = message.replace(`{${key}}`, filters[key].join('、'))
         })
         message = message.replace('{prompt}', prompt)
       } else {
